@@ -1,26 +1,18 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UserRole } from './user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly users: UsersService) {}
 
   @Post()
-  create(
-    @Body()
-    body: { email: string; fullName: string; password: string; role?: UserRole },
-  ) {
-    return this.usersService.create({
-      email: body.email,
-      fullName: body.fullName,
-      password: body.password,
-      role: body.role ?? UserRole.CUSTOMER,
-    });
+  create(@Body() dto: CreateUserDto) {
+    return this.users.create(dto);
   }
 
   @Get()
   findAll() {
-    return this.usersService.findAll();
+    return this.users.findAll();
   }
 }
