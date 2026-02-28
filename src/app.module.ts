@@ -1,19 +1,19 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { HttpModule } from '@nestjs/axios';
 
 import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { AuthModule } from './auth/auth.module';
 
+import { OrderSubscriber } from './orders/order.subscriber';
+import { WebhookTestController } from './webhooks/webhook-test.controller';
+
 @Module({
   imports: [
-    // Підключення .env
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
+    ConfigModule.forRoot({ isGlobal: true }),
 
-    // Підключення PostgreSQL через TypeORM
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (cfg: ConfigService) => ({
@@ -28,10 +28,19 @@ import { AuthModule } from './auth/auth.module';
       }),
     }),
 
-    // Наші модулі
+    // ✅ потрібен для webhook HTTP POST
+    HttpModule,
+
+    // існуючі модулі
     UsersModule,
     ProductsModule,
     AuthModule,
   ],
+
+  // ✅ тестовий endpoint для webhook (щоб працювало без інтернету)
+  controllers: [WebhookTestController],
+
+  // ✅ subscriber (слухає INSERT в orders)
+  providers: [OrderSubscriber],
 })
 export class AppModule {}

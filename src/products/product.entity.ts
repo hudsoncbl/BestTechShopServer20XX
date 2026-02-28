@@ -5,7 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Index,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
+
+import { Category } from '../categories/category.entity';
 
 @Entity('products')
 export class Product {
@@ -25,12 +29,22 @@ export class Product {
   @Column({ type: 'int', default: 0 })
   stock: number;
 
-  // ✅ ДОДАНО
   @Column({ type: 'text', nullable: true })
   description?: string;
 
   @Column({ type: 'boolean', default: true })
   isAvailable: boolean;
+
+  // 🔹 ManyToMany → Category
+  @ManyToMany(() => Category, (c) => c.products, {
+    cascade: true,
+  })
+  @JoinTable({
+    name: 'product_categories',
+    joinColumn: { name: 'product_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'category_id', referencedColumnName: 'id' },
+  })
+  categories: Category[];
 
   @CreateDateColumn()
   createdAt: Date;
