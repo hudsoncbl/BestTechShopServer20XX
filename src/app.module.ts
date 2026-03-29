@@ -16,15 +16,15 @@ import { WebhookTestController } from './webhooks/webhook-test.controller';
 
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (cfg: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: cfg.get<string>('DB_HOST'),
-        port: Number(cfg.get<string>('DB_PORT')),
-        username: cfg.get<string>('DB_USERNAME'),
-        password: cfg.get<string>('DB_PASSWORD'),
-        database: cfg.get<string>('DB_NAME'),
+        host: configService.get<string>('PGHOST'),
+        port: Number(configService.get<string>('PGPORT')),
+        username: configService.get<string>('PGUSER'),
+        password: configService.get<string>('PGPASSWORD'),
+        database: configService.get<string>('PGDATABASE'),
         autoLoadEntities: true,
-        synchronize: cfg.get<string>('DB_SYNC') === 'true',
+        synchronize: false,
       }),
     }),
 
