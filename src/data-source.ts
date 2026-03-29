@@ -12,11 +12,11 @@ import { WebhookSubscription } from './webhooks/webhook-subscription.entity';
 import { WebhookDelivery } from './webhooks/webhook-delivery.entity';
 import { Category } from './categories/category.entity';
 
-dotenv.config();
+dotenv.config({ path: '.env' });
 
 export default new DataSource({
   type: 'postgres',
-  host: process.env.DB_HOST,
+  host: process.env.DB_HOST, //@todo investigate configService usage
   port: Number(process.env.PGPORT),
   username: process.env.PGUSER,
   password: process.env.PGPASSWORD,
