@@ -9,6 +9,8 @@ import { AuthModule } from './auth/auth.module';
 
 import { OrderSubscriber } from './orders/order.subscriber';
 import { WebhookTestController } from './webhooks/webhook-test.controller';
+import { OrdersService } from './orders/orders.service';
+import { OrdersController } from './orders/orders.controller';
 
 @Module({
   imports: [
@@ -38,9 +40,9 @@ import { WebhookTestController } from './webhooks/webhook-test.controller';
   ],
 
   // ✅ тестовий endpoint для webhook (щоб працювало без інтернету)
-  controllers: [WebhookTestController],
+  controllers: [WebhookTestController, OrdersController],
 
   // ✅ subscriber (слухає INSERT в orders)
-  providers: [OrderSubscriber],
+  providers: [OrderSubscriber, OrdersService],
 })
 export class AppModule {}
