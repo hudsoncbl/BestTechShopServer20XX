@@ -7,7 +7,6 @@ import { Transport } from '@nestjs/microservices';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // ✅ твої пайпи залишаємо
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -16,10 +15,8 @@ async function bootstrap() {
     }),
   );
 
-  // ✅ твій фільтр теж
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  // 🔥 ДОДАЄМО МІКРОСЕРВІС
   app.connectMicroservice({
     transport: Transport.TCP,
     options: {
@@ -27,10 +24,8 @@ async function bootstrap() {
     },
   });
 
-  // 🔥 ЗАПУСК МІКРОСЕРВІСІВ
   await app.startAllMicroservices();
 
-  // HTTP залишається
   await app.listen(3000);
 }
 bootstrap();

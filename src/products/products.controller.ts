@@ -8,20 +8,16 @@ import { MessagePattern } from '@nestjs/microservices';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  // ✅ ЗАЛИШАЄМО HTTP (щоб фронт працював)
   @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.productsService.findAll();
   }
 
-  // 🔥 МІКРОСЕРВІС (для внутрішніх викликів)
   @MessagePattern({ cmd: 'get_products' })
   findAllMicro() {
     return this.productsService.findAll();
   }
-
-  // ===============================
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -35,7 +31,6 @@ export class ProductsController {
     });
   }
 
-  // 🔥 МІКРОСЕРВІС створення товару
   @MessagePattern({ cmd: 'create_product' })
   createMicro(dto: CreateProductDto) {
     return this.productsService.create({
