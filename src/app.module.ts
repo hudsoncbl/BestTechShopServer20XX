@@ -30,6 +30,7 @@ import { OrdersQueueModule } from './orders-queue/orders-queue.module';
         database: configService.get<string>('PGDATABASE'),
         autoLoadEntities: true,
         synchronize: false,
+        logging: true,
       }),
     }),
 

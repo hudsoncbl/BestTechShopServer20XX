@@ -11,6 +11,7 @@ import {
 
 import { UserProfile } from '../profiles/user-profile.entity';
 import { Order } from '../orders/order.entity';
+import { Exclude } from 'class-transformer';
 
 export enum UserRole {
   CUSTOMER = 'CUSTOMER',
@@ -28,7 +29,8 @@ export class User {
   @Column()
   fullName: string;
 
-  @Column({ select: false })
+  @Exclude()
+  @Column()
   password: string;
 
   @Column({

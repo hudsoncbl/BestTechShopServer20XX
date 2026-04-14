@@ -25,7 +25,7 @@ export class ProductsController {
     return this.productsService.create({
       name: dto.name,
       brand: dto.brand,
-      price: String(dto.price) as any,
+      price: String(dto.price),
       stock: dto.stock ?? 0,
       description: dto.description,
     });
