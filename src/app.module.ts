@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
+import { BullModule } from '@nestjs/bull';
 
 import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
@@ -9,11 +10,15 @@ import { AuthModule } from './auth/auth.module';
 
 import { OrderSubscriber } from './orders/order.subscriber';
 import { WebhookTestController } from './webhooks/webhook-test.controller';
+import { OrdersService } from './orders/orders.service';
+import { OrdersController } from './orders/orders.controller';
+import { OrdersQueueModule } from './orders-queue/orders-queue.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
 
+    // 🔥 DATABASE
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
@@ -25,22 +30,30 @@ import { WebhookTestController } from './webhooks/webhook-test.controller';
         database: configService.get<string>('PGDATABASE'),
         autoLoadEntities: true,
         synchronize: false,
+        logging: true,
       }),
     }),
 
-    // ✅ потрібен для webhook HTTP POST
+    // 🔥 HTTP module
     HttpModule,
 
-    // існуючі модулі
+    // 🔥 BULL + REDIS (ДОДАЛИ ОЦЕ)
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
+
+    // existing modules
     UsersModule,
     ProductsModule,
     AuthModule,
+    OrdersQueueModule,
   ],
 
-  // ✅ тестовий endpoint для webhook (щоб працювало без інтернету)
-  controllers: [WebhookTestController],
+  controllers: [WebhookTestController, OrdersController],
 
-  // ✅ subscriber (слухає INSERT в orders)
-  providers: [OrderSubscriber],
+  providers: [OrderSubscriber, OrdersService],
 })
 export class AppModule {}

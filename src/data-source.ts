@@ -22,6 +22,7 @@ export default new DataSource({
   password: process.env.PGPASSWORD,
   database: process.env.PGDATABASE,
   synchronize: false,
+  logging: true,
   entities: [
     User,
     Product,
